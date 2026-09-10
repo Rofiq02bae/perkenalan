@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle Susun Kalimat Bahasa Arab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+  }
+  .container {
+    width: min(1000px, 92%);
+    margin: 32px auto 50px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    color: white;
+    padding: 28px;
+    border-radius: 18px;
+    margin-bottom: 22px;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 30px; }
+  .hero p { margin: 0; line-height: 1.6; }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+  }
+  .card h2 { margin-top: 0; color: #115e59; }
+  .objective li, .steps li { margin-bottom: 8px; line-height: 1.5; }
+  .game-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .badge {
+    background: #ccfbf1;
+    color: #115e59;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .instruction {
+    background: #f0fdfa;
+    border-left: 4px solid #0f766e;
+    padding: 12px 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+  }
+  .sentence {
+    direction: rtl;
+    min-height: 95px;
+    border: 2px dashed #94a3b8;
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 0;
+    background: #f8fafc;
+  }
+  .sentence.drag-over { border-color: #0f766e; background: #ecfeff; }
+  .placeholder {
+    direction: ltr;
+    color: #64748b;
+    font-size: 14px;
+  }
+  .word-bank {
+    direction: rtl;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 14px;
+    min-height: 95px;
+  }
+  .word {
+    user-select: none;
+    touch-action: none;
+    cursor: grab;
+    background: white;
+    border: 2px solid #0f766e;
+    color: #134e4a;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 24px;
+    font-family: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(15, 118, 110, .12);
+    transition: .15s ease;
+  }
+  .word:hover { transform: translateY(-2px); }
+  .word.dragging { opacity: .45; cursor: grabbing; }
+  .word.correct { border-color: #16a34a; background: #dcfce7; color: #166534; }
+  .word.incorrect { border-color: #dc2626; background: #fee2e2; color: #991b1b; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  button {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .primary { background: #0f766e; color: white; }
+  .secondary { background: #e2e8f0; color: #334155; }
+  .danger { background: #fee2e2; color: #991b1b; }
+  #feedback {
+    margin-top: 14px;
+    min-height: 28px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+  .score { font-weight: bold; }
+  .rtl-example {
+    direction: rtl;
+    font-family: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+    font-size: 28px;
+    text-align: center;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 10px;
+  }
+  .footer-note { color: #64748b; font-size: 13px; text-align: center; }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 24px; }
+    .word { font-size: 21px; padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <h1>Inovasi Media Pembelajaran Bahasa Arab</h1>
+    <p>Media puzzle interaktif untuk melatih siswa menyusun kata-kata Bahasa Arab menjadi kalimat yang benar menggunakan pointer.</p>
+  </section>
+
+  <section class="card">
+    <h2>Materi Pembelajaran</h2>
+    <p><strong>Topik:</strong> Menyusun kalimat Bahasa Arab sederhana (الجُمْلَةُ الْعَرَبِيَّةُ)</p>
+    <ul class="objective">
+      <li>Siswa mengenali kosakata Bahasa Arab dasar.</li>
+      <li>Siswa memahami urutan kata dalam kalimat sederhana.</li>
+      <li>Siswa dapat menyusun kalimat Bahasa Arab melalui aktivitas puzzle.</li>
+      <li>Siswa memperoleh umpan balik langsung setelah melakukan pengecekan jawaban.</li>
+    </ul>
+
+    <div class="rtl-example">أَنَا أَقْرَأُ الْكِتَابَ</div>
+    <p style="text-align:center"><em>Saya membaca buku.</em></p>
+  </section>
+
+  <section class="card">
+    <div class="game-head">
+      <h2 style="margin:0">Puzzle Susun Kalimat</h2>
+      <span class="badge">Level <span id="level">1</span> / 3</span>
+    </div>
+
+    <div class="instruction">
+      <strong>Cara bermain:</strong> Seret kotak kata dengan pointer (mouse/touch) ke area kalimat. Susun dari kanan ke kiri hingga membentuk kalimat yang benar, lalu tekan <strong>Periksa Jawaban</strong>.
+    </div>
+
+    <div class="game-head" style="margin-top:18px">
+      <span class="score">Skor: <span id="score">0</span></span>
+      <span class="score">Soal: <span id="question">1</span> / 3</span>
+    </div>
+
+    <div id="sentence" class="sentence" aria-label="Area penyusunan kalimat">
+      <span id="placeholder" class="placeholder">Tarik kata ke sini...</span>
+    </div>
+
+    <div id="wordBank" class="word-bank" aria-label="Kumpulan kata">
+    </div>
+
+    <div class="controls">
+      <button class="primary" onclick="checkAnswer()">Periksa Jawaban</button>
+      <button class="secondary" onclick="shuffleWords()">Acak Kata</button>
+      <button class="danger" onclick="resetQuestion()">Reset</button>
+      <button class="secondary" onclick="nextQuestion()">Soal Berikutnya</button>
+    </div>
+    <div id="feedback"></div>
+  </section>
+
+  <section class="card">
+    <h2>Konsep Inovasi Media</h2>
+    <ul class="steps">
+      <li><strong>Interaktif:</strong> siswa berinteraksi langsung dengan elemen puzzle.</li>
+      <li><strong>Visual:</strong> setiap kosakata ditampilkan dalam kotak yang mudah dibedakan.</li>
+      <li><strong>Berbasis pointer:</strong> penggunaan drag-and-drop dapat dilakukan dengan mouse maupun layar sentuh.</li>
+      <li><strong>Umpan balik langsung:</strong> sistem memberi informasi benar/salah setelah jawaban diperiksa.</li>
+      <li><strong>Gamifikasi sederhana:</strong> terdapat level, nomor soal, dan skor untuk meningkatkan motivasi belajar.</li>
+    </ul>
+  </section>
+
+  <p class="footer-note">Media pembelajaran dibuat menggunakan HTML, CSS, dan JavaScript tanpa library tambahan.</p>
+</div>
+
+<script>
+const questions = [
+  {
+    words: ["أَنَا", "أَقْرَأُ", "الْكِتَابَ"],
+    answer: ["أَنَا", "أَقْرَأُ", "الْكِتَابَ"],
+    translation: "Saya membaca buku."
+  },
+  {
+    words: ["الطَّالِبُ", "يَقْرَأُ", "الدَّرْسَ"],
+    answer: ["الطَّالِبُ", "يَقْرَأُ", "الدَّرْسَ"],
+    translation: "Siswa membaca pelajaran."
+  },
+  {
+    words: ["مُحَمَّدٌ", "يَذْهَبُ", "إِلَى", "الْمَدْرَسَةِ"],
+    answer: ["مُحَمَّدٌ", "يَذْهَبُ", "إِلَى", "الْمَدْرَسَةِ"],
+    translation: "Muhammad pergi ke sekolah."
+  }
+];
+
+let current = 0;
+let score = 0;
+let dragged = null;
+
+const sentence = document.getElementById('sentence');
+const wordBank = document.getElementById('wordBank');
+const feedback = document.getElementById('feedback');
+
+function createWord(text) {
+  const el = document.createElement('div');
+  el.className = 'word';
+  el.textContent = text;
+  el.draggable = true;
+  el.dataset.word = text;
+
+  el.addEventListener('dragstart', () => {
+    dragged = el;
+    el.classList.add('dragging');
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    dragged = null;
+  });
+
+  return el;
+}
+
+function setupPointerDrag(el) {
+  // Pointer Events agar mendukung mouse, stylus, dan touch.
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault();
+    dragged = el;
+    el.classList.add('dragging');
+    el.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener('pointermove', (e) => {
+    if (!dragged || dragged !== el) return;
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    if (!target) return;
+    const container = target.closest('#sentence, #wordBank');
+    if (container && container !== el.parentElement) {
+      if (container.id === 'sentence') {
+        insertByPointer(e.clientX);
+      } else {
+        wordBank.appendChild(el);
+      }
+    }
+  });
+
+  el.addEventListener('pointerup', () => {
+    if (dragged === el) {
+      el.classList.remove('dragging');
+      dragged = null;
+      hidePlaceholderIfNeeded();
+    }
+  });
+}
+
+function makeWords() {
+  wordBank.innerHTML = '';
+  sentence.innerHTML = '';
+  const ph = document.createElement('span');
+  ph.id = 'placeholder';
+  ph.className = 'placeholder';
+  ph.textContent = 'Tarik kata ke sini...';
+  sentence.appendChild(ph);
+
+  const shuffled = [...questions[current].words].sort(() => Math.random() - 0.5);
+  shuffled.forEach(word => {
+    const el = createWord(word);
+    setupPointerDrag(el);
+    wordBank.appendChild(el);
+  });
+  feedback.textContent = '';
+  document.getElementById('level').textContent = current + 1;
+  document.getElementById('question').textContent = current + 1;
+}
+
+function insertByPointer(x) {
+  if (!dragged) return;
+  const items = [...sentence.querySelectorAll('.word:not(.dragging)')];
+  let before = null;
+  for (const item of items) {
+    const rect = item.getBoundingClientRect();
+    // Karena area puzzle menggunakan direction: rtl, kata yang berada
+    // lebih ke kanan menjadi posisi yang lebih awal dalam urutan Arab.
+    if (x > rect.left + rect.width / 2) {
+      before = item;
+      break;
+    }
+  }
+  if (before) sentence.insertBefore(dragged, before);
+  else sentence.appendChild(dragged);
+  hidePlaceholderIfNeeded();
+}
+
+sentence.addEventListener('dragover', e => {
+  e.preventDefault();
+  sentence.classList.add('drag-over');
+  if (dragged) insertByPointer(e.clientX);
+});
+
+sentence.addEventListener('dragleave', () => sentence.classList.remove('drag-over'));
+sentence.addEventListener('drop', e => {
+  e.preventDefault();
+  sentence.classList.remove('drag-over');
+  if (dragged) {
+    insertByPointer(e.clientX);
+    dragged.classList.remove('dragging');
+    dragged = null;
+  }
+});
+
+wordBank.addEventListener('dragover', e => e.preventDefault());
+wordBank.addEventListener('drop', e => {
+  e.preventDefault();
+  if (dragged) {
+    wordBank.appendChild(dragged);
+    dragged.classList.remove('dragging');
+    dragged = null;
+    hidePlaceholderIfNeeded();
+  }
+});
+
+function hidePlaceholderIfNeeded() {
+  const ph = document.getElementById('placeholder');
+  if (!ph) return;
+  const hasWords = sentence.querySelectorAll('.word').length > 0;
+  ph.style.display = hasWords ? 'none' : 'inline';
+}
+
+function getCurrentOrder() {
+  return [...sentence.querySelectorAll('.word')].map(el => el.dataset.word);
+}
+
+function checkAnswer() {
+  const currentOrder = getCurrentOrder();
+  const correct = questions[current].answer;
+  const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(correct);
+  const words = [...sentence.querySelectorAll('.word')];
+  words.forEach((el, i) => {
+    el.classList.remove('correct', 'incorrect');
+    if (currentOrder[i] === correct[i]) el.classList.add('correct');
+    else el.classList.add('incorrect');
+  });
+
+  if (isCorrect) {
+    score += 10;
+    document.getElementById('score').textContent = score;
+    feedback.innerHTML = `✅ Benar! <span style="font-weight:normal">${questions[current].translation}</span>`;
+    feedback.style.color = '#166534';
+  } else {
+    feedback.textContent = '❌ Belum tepat. Perhatikan urutan kata yang benar, lalu coba lagi.';
+    feedback.style.color = '#991b1b';
+  }
+}
+
+function shuffleWords() {
+  const words = [...wordBank.querySelectorAll('.word')];
+  words.sort(() => Math.random() - 0.5);
+  words.forEach(w => wordBank.appendChild(w));
+  feedback.textContent = 'Kata sudah diacak.';
+  feedback.style.color = '#475569';
+}
+
+function resetQuestion() {
+  makeWords();
+}
+
+function nextQuestion() {
+  current = (current + 1) % questions.length;
+  makeWords();
+}
+
+makeWords();
+</script>
+</body>
+</html>
